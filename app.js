@@ -1,6 +1,6 @@
 (() => {
   const SCRIPT_URL =
-    "https://script.google.com/macros/s/AKfycbzRlzJhLjKfV99fxJyZwzKZBYbsDyzf7_kDxDNk839f597yZuk-IvinD-1cm5bHE-kOtQ/exec";
+    "https://script.google.com/macros/s/AKfycbyuEUQU5isxDGFiqBJkYaVXHcdonAXNirX3ORxTEFnNAEEvb8N3xVmUoRqZFiIxguJawA/exec";
   const isConfigured =
     /^https:\/\/script\.google\.com\/macros\/s\/[^/]+\/exec$/.test(SCRIPT_URL);
   const form = document.getElementById("attendance-form");
