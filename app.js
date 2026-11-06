@@ -10,12 +10,67 @@
   const lesson = document.getElementById("lesson-area");
   const attendanceCard = document.getElementById("attendance-card");
   const answerFields = [...document.querySelectorAll("[data-answer]")];
+  const websiteCode = document.getElementById("website-code");
+  const websitePreview = document.getElementById("website-preview");
+  const lineNumbers = document.getElementById("code-line-numbers");
+  const codeCharacterCount = document.getElementById("code-character-count");
+  const codeEditorStatus = document.getElementById("code-editor-status");
+  const runCodeButton = document.getElementById("run-code");
   const saveLabel = document.getElementById("save-label");
   const saveIndicator = document.getElementById("save-indicator");
   const finishButton = document.getElementById("finish-lesson");
   const pendingRequests = new Map();
+  const STARTER_WEBSITE_CODE = `<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Trường THPT Hà Thành</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Arial, sans-serif; color: #233047; background: #f5f7fc; }
+    header { padding: 18px 8%; display: flex; justify-content: space-between; background: white; }
+    header a { color: #5446c8; font-weight: bold; text-decoration: none; }
+    .hero { padding: 48px 8%; color: white; background: linear-gradient(120deg, #5547cc, #8978ed); }
+    h1 { margin: 0 0 12px; font-size: 34px; }
+    main { padding: 28px 8%; }
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; }
+    article { padding: 20px; border-radius: 14px; background: white; box-shadow: 0 6px 20px #33415512; }
+    article span { font-size: 26px; }
+    button { padding: 11px 16px; border: 0; border-radius: 9px; color: white; background: #ef9253; cursor: pointer; }
+    footer { padding: 20px 8%; color: #64748b; background: white; }
+  </style>
+</head>
+<body>
+  <header><a href="#">THPT HÀ THÀNH</a><a href="#hoat-dong">Hoạt động trường</a></header>
+  <section class="hero">
+    <h1>Chào mừng đến với Hà Thành!</h1>
+    <p>Nơi chắp cánh những ước mơ và ý tưởng sáng tạo.</p>
+  </section>
+  <main id="hoat-dong">
+    <h2>Khám phá trường mình</h2>
+    <div class="cards">
+      <article><span>📚</span><h3>Góc học tập</h3><p>Tài liệu và kiến thức dành cho học sinh.</p></article>
+      <article><span>🎨</span><h3>Hoạt động</h3><p>Cùng nhìn lại những khoảnh khắc đáng nhớ.</p></article>
+      <article><span>📅</span><h3>Lịch học</h3><p>Cập nhật lịch học và thông báo của trường.</p></article>
+    </div>
+    <p id="notice">Thử bấm nút sau khi sửa mã JavaScript nhé!</p>
+    <button id="hello-button">Gửi lời chào</button>
+  </main>
+  <footer>Trường THPT Hà Thành · Học tập, kết nối, sáng tạo</footer>
+  <script>
+    document.getElementById("hello-button").addEventListener("click", () => {
+      document.getElementById("notice").textContent = "Chúc em có một ngày học tập thật vui!";
+    });
+  <\/script>
+</body>
+</html>`;
   let activeSession = null;
   let responseFrame = null;
+  let previewTimer;
+
+  const isTouchLayout = () =>
+    window.matchMedia("(max-width: 760px), (pointer: coarse)").matches;
 
   const setStatus = (message, isError = true) => {
     status.textContent = message;
@@ -109,6 +164,33 @@
     document.getElementById("progress-bar").style.width = `${percent}%`;
   };
 
+  const refreshCodeEditor = () => {
+    const lineCount = Math.max(1, websiteCode.value.split("\n").length);
+    lineNumbers.textContent = Array.from({ length: lineCount }, (_, index) => index + 1).join("\n");
+    codeCharacterCount.textContent = `${websiteCode.value.length.toLocaleString("vi-VN")} / 5.000 ký tự`;
+    clearTimeout(previewTimer);
+    if (isTouchLayout()) {
+      codeEditorStatus.textContent = "Mã đã thay đổi. Nhấn Chạy thử để xem kết quả.";
+      return;
+    }
+    previewTimer = setTimeout(() => {
+      websitePreview.srcdoc = websiteCode.value;
+      codeEditorStatus.textContent = "Bản xem trước đã cập nhật trực tiếp.";
+    }, 150);
+  };
+
+  const runCode = () => {
+    websitePreview.srcdoc = websiteCode.value;
+    codeEditorStatus.textContent = "Đã chạy mã và cập nhật bản xem trước.";
+  };
+
+  const resetCodeEditor = () => {
+    websiteCode.value = STARTER_WEBSITE_CODE;
+    websiteCode.wrap = isTouchLayout() ? "soft" : "off";
+    refreshCodeEditor();
+    runCode();
+  };
+
   const updateStudentView = (studentName, className) => {
     document.getElementById("student-greeting").textContent =
       `${studentName} · ${className}`;
@@ -134,8 +216,15 @@
     );
   };
 
-  const incompleteAnswers = () =>
-    answerFields.filter((field) => !field.value.trim());
+  const incompleteAnswers = () => {
+    const missing = answerFields.filter((field) => !field.value.trim());
+    if (websiteCode.value.trim() === STARTER_WEBSITE_CODE.trim()) {
+      missing.push(websiteCode);
+    }
+    return missing;
+  };
+
+  resetCodeEditor();
 
   if (!isConfigured) {
     form.querySelector('button[type="submit"]').disabled = true;
@@ -186,12 +275,28 @@
       refreshProgress();
       saveLabel.textContent = "Câu trả lời sẽ được gửi khi em nộp bài";
       saveIndicator.style.background = "#e6a14e";
+      if (field === websiteCode) refreshCodeEditor();
     });
     field.addEventListener("change", () => {
       field.removeAttribute("aria-invalid");
       field.classList.remove("answer-missing");
       refreshProgress();
     });
+  });
+
+  websiteCode.addEventListener("scroll", () => {
+    lineNumbers.scrollTop = websiteCode.scrollTop;
+    lineNumbers.scrollLeft = websiteCode.scrollLeft;
+  });
+  runCodeButton.addEventListener("click", runCode);
+  window.matchMedia("(max-width: 760px), (pointer: coarse)").addEventListener("change", () => {
+    websiteCode.wrap = isTouchLayout() ? "soft" : "off";
+  });
+  websiteCode.addEventListener("keydown", (event) => {
+    if (event.key !== "Tab" || event.shiftKey) return;
+    event.preventDefault();
+    websiteCode.setRangeText("  ", websiteCode.selectionStart, websiteCode.selectionEnd, "end");
+    websiteCode.dispatchEvent(new Event("input", { bubbles: true }));
   });
 
   finishButton.addEventListener("click", async () => {
@@ -209,7 +314,7 @@
       missing[0].scrollIntoView({ behavior: "smooth", block: "center" });
       missing[0].focus({ preventScroll: true });
       setStatus(
-        `Còn ${missing.length} mục chưa hoàn thành. Hãy điền đầy đủ trước khi nộp bài.`,
+        `Còn ${missing.length} mục chưa hoàn thành. Hãy điền đầy đủ và chỉnh sửa mã website mẫu trước khi nộp bài.`,
       );
       return;
     }
@@ -260,6 +365,7 @@
       field.removeAttribute("aria-invalid");
       field.classList.remove("answer-missing");
     });
+    resetCodeEditor();
     const submitButton = form.querySelector('button[type="submit"]');
     submitButton.disabled = !isConfigured;
     finishButton.disabled = false;

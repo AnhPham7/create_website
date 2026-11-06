@@ -12,6 +12,8 @@ Trang học sinh có thể được đăng công khai. Điểm danh và câu tr�
 
 Mỗi lượt điểm danh được ghi trước khi học sinh bắt đầu. Câu trả lời được ghi vào cùng dòng sau khi học sinh hoàn thành và nộp bài. Website không có API đọc dữ liệu từ bảng tính.
 
+Ở Phần 3, học sinh sửa trực tiếp một tệp HTML có thể chứa HTML, CSS và JavaScript trong trình soạn thảo. Khung xem trước chạy trong iframe sandbox và tự cập nhật khi gõ; mã được gửi cùng câu trả lời `schoolContent` vào cột nội dung website hiện có.
+
 ## 2. Cấu hình đầu nhận bài
 
 1. Trong Apps Script, chọn **Triển khai → Lần triển khai mới → Ứng dụng web**.

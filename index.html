@@ -159,15 +159,36 @@
             <div><p class="section-kicker">HOẠT ĐỘNG NHÓM · 10 PHÚT</p><h2>Luyện tập: Website trường mình</h2><p>Cùng phác thảo ý tưởng cho website mới của trường THPT Hà Thành.</p></div>
             <span class="time-chip">10 phút</span>
           </div>
-          <div class="practice-banner"><span class="banner-star">✳</span><div><strong>Thử thách thiết kế</strong><p>Một website dành cho học sinh, phụ huynh và thầy cô — em sẽ bắt đầu từ đâu?</p></div></div>
+          <div class="practice-banner"><span class="banner-star">✳</span><div><strong>Thử thách thiết kế</strong><p>Viết mã HTML, CSS và JavaScript cho website trường mình. Trên máy tính, kết quả tự cập nhật; trên điện thoại, nhấn Chạy thử để xem bài làm.</p></div></div>
           <div class="practice-grid">
             <label class="compact-field"><span>Tên website</span><input data-answer="schoolName" placeholder="Tên gọi ngắn gọn, dễ nhớ"></label>
             <label class="compact-field"><span>Slogan</span><input data-answer="schoolSlogan" placeholder="Thông điệp chính của website"></label>
-            <label class="compact-field full-field"><span>Nội dung chính</span><textarea data-answer="schoolContent" rows="3" placeholder="Website sẽ giúp người dùng làm được những gì?"></textarea></label>
             <label class="compact-field"><span>Header gồm</span><textarea data-answer="schoolHeader" rows="2" placeholder="Logo, menu, tìm kiếm..."></textarea></label>
             <label class="compact-field"><span>Body gồm</span><textarea data-answer="schoolBody" rows="2" placeholder="Tin tức, lịch học, hoạt động..."></textarea></label>
             <label class="compact-field"><span>Footer gồm</span><textarea data-answer="schoolFooter" rows="2" placeholder="Địa chỉ, liên hệ, liên kết..."></textarea></label>
           </div>
+          <section class="live-coding" aria-labelledby="coding-title">
+            <div class="coding-heading">
+              <div><p class="section-kicker">THỰC HÀNH CODE TRỰC TIẾP</p><h3 id="coding-title">Tự tay tạo website</h3></div>
+              <span class="live-preview-label"><span class="live-dot"></span> XEM TRƯỚC TRỰC TIẾP</span>
+            </div>
+            <p class="coding-instructions">Sửa mã mẫu bên dưới. Viết HTML cho nội dung, CSS trong thẻ <code>&lt;style&gt;</code> để trang trí, và JavaScript trong thẻ <code>&lt;script&gt;</code> để thêm tương tác. Máy tính tự cập nhật bản xem trước; điện thoại có nút Chạy thử riêng.</p>
+            <div class="coding-workspace">
+              <div class="code-panel">
+                <div class="code-toolbar"><span class="code-language"><span class="code-language-dot"></span> HTML · CSS · JS</span><span id="code-character-count">0 / 5.000 ký tự</span><button class="button button-run-code" id="run-code" type="button">▶ Chạy thử</button></div>
+                <div class="code-editor-shell">
+                  <pre class="code-line-numbers" id="code-line-numbers" aria-hidden="true"></pre>
+                  <textarea id="website-code" data-answer="schoolContent" rows="20" maxlength="5000" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" aria-label="Mã HTML, CSS và JavaScript của website" wrap="soft"></textarea>
+                </div>
+                <div class="code-editor-hint"><kbd>Tab</kbd> để thụt lề <span>·</span> Sửa mã rồi nhấn <strong>Chạy thử</strong> để cập nhật kết quả</div>
+              </div>
+              <div class="preview-panel">
+                <div class="preview-toolbar"><span><i></i><i></i><i></i></span><strong>KẾT QUẢ WEBSITE</strong><span class="preview-live"><span></span> LIVE</span></div>
+                <iframe id="website-preview" title="Xem trước website do học sinh viết" sandbox="allow-scripts" referrerpolicy="no-referrer"></iframe>
+              </div>
+            </div>
+            <p class="code-editor-status" id="code-editor-status" aria-live="polite">Đang hiển thị trang mẫu. Hãy bắt đầu chỉnh sửa mã.</p>
+          </section>
           <div class="subactivity reflection-block" id="reflection">
             <div class="subactivity-title"><span class="subactivity-index">✦</span><div><h3>Nhận xét ý tưởng của nhóm</h3><p>Nhìn lại thiết kế theo ba tiêu chí.</p></div></div>
             <div class="practice-grid">
@@ -185,6 +206,6 @@
     </main>
 
     <footer class="site-footer"><span>THPT HÀ THÀNH</span><span>TIN HỌC 12 <i>·</i> BÀI 23</span><span>HỌC ĐỂ SÁNG TẠO</span></footer>
-    <script src="app.js?v=3"></script>
+    <script src="app.js?v=2"></script>
   </body>
 </html>
