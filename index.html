@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f6f7fb">
+    <title>Bài 23 · Chuẩn bị xây dựng trang web</title>
+    <link rel="stylesheet" href="style.css?v=2">
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Tin học 12">
+        <span class="brand-mark" aria-hidden="true">&lt;/&gt;</span>
+        <span><strong>TIN HỌC 12</strong><small>KHÔNG GIAN HỌC TẬP SỐ</small></span>
+      </a>
+      <div class="topbar-actions">
+        <span class="lesson-label"><span class="live-dot"></span> BÀI 23 · 45 PHÚT</span>
+        <button class="button button-quiet" id="change-student" type="button" hidden>Đổi học sinh</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero-copy">
+          <div class="eyebrow"><span class="eyebrow-line"></span> PHIẾU HỌC TẬP TƯƠNG TÁC</div>
+          <h1>Chuẩn bị xây dựng<br><span>trang web</span></h1>
+          <p class="hero-description">Khám phá cách một website được hình thành — từ nhu cầu người dùng đến bố cục và màu sắc.</p>
+          <div class="hero-meta">
+            <span><span class="meta-icon">◷</span> 45 phút</span>
+            <span><span class="meta-icon">◎</span> Cá nhân &amp; nhóm</span>
+            <span><span class="meta-icon">✳</span> Tin học 12</span>
+          </div>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+          <div class="art-orbit orbit-one"></div>
+          <div class="art-orbit orbit-two"></div>
+          <div class="art-window">
+            <div class="window-head"><i></i><i></i><i></i><span>my-first-website.html</span></div>
+            <div class="window-content">
+              <span class="code-line code-short"></span>
+              <span class="code-line code-long"></span>
+              <span class="code-line code-medium"></span>
+              <div class="code-card"><span></span><span></span><span></span></div>
+              <span class="code-line code-long"></span>
+            </div>
+          </div>
+          <span class="art-spark spark-one">✳</span><span class="art-spark spark-two">✦</span>
+          <span class="art-pill">Ý TƯỞNG → GIAO DIỆN</span>
+        </div>
+      </section>
+
+      <section class="attendance-card" id="attendance-card">
+        <div class="attendance-intro">
+          <div class="section-icon icon-purple">01</div>
+          <div>
+            <p class="section-kicker">TRƯỚC KHI BẮT ĐẦU</p>
+            <h2>Điểm danh vào lớp</h2>
+            <p>Điền thông tin để lưu lại lượt tham gia và bài làm của em.</p>
+          </div>
+        </div>
+        <form id="attendance-form" class="attendance-form">
+          <label class="field">
+            <span>Họ và tên</span>
+            <input id="student-name" name="name" autocomplete="name" maxlength="80" placeholder="Ví dụ: Nguyễn Minh Anh" required>
+          </label>
+          <label class="field field-class">
+            <span>Lớp</span>
+            <input id="student-class" name="class" maxlength="20" placeholder="Ví dụ: 12A1" required>
+          </label>
+          <button class="button button-primary attendance-submit" type="submit">Vào bài học <span aria-hidden="true">→</span></button>
+        </form>
+        <p class="privacy-note"><span aria-hidden="true">▣</span> Thông tin điểm danh và bài nộp được gửi vào bảng tính riêng của giáo viên.</p>
+        <p class="status-message" id="app-status" role="status" aria-live="polite"></p>
+      </section>
+
+      <section class="lesson-area" id="lesson-area" hidden>
+        <div class="student-strip">
+          <div class="student-avatar" id="student-initials">HS</div>
+          <div><span class="student-caption">HỌC SINH ĐANG HỌC</span><strong id="student-greeting"></strong></div>
+          <div class="lesson-progress"><div class="progress-label"><span>TIẾN ĐỘ BÀI HỌC</span><strong id="progress-value">0%</strong></div><div class="progress-track"><span id="progress-bar"></span></div></div>
+        </div>
+
+        <nav class="lesson-nav" aria-label="Các phần của bài học">
+          <a href="#warmup"><span>01</span> Khởi động</a>
+          <a href="#discovery"><span>02</span> Khám phá</a>
+          <a href="#practice"><span>03</span> Luyện tập</a>
+          <a href="#reflection"><span>04</span> Nhìn lại</a>
+        </nav>
+
+        <section class="activity-card" id="warmup">
+          <div class="activity-heading">
+            <div class="section-icon icon-orange">01</div>
+            <div><p class="section-kicker">CÁ NHÂN · 5 PHÚT</p><h2>Khởi động: Website quanh em</h2><p>Bắt đầu từ những trang web em đã biết và thường sử dụng.</p></div>
+            <span class="time-chip">5 phút</span>
+          </div>
+          <div class="question-grid">
+            <label class="question-card"><span class="question-number">CÂU 1</span><strong>Em thường truy cập những trang web nào?</strong><textarea data-answer="warmupSites" rows="3" placeholder="Kể tên một vài trang web em yêu thích..."></textarea></label>
+            <label class="question-card"><span class="question-number">CÂU 2</span><strong>Theo em, một trang web hấp dẫn cần có những yếu tố gì?</strong><textarea data-answer="warmupFactors" rows="3" placeholder="Gợi ý: nội dung, màu sắc, bố cục, tốc độ..."></textarea></label>
+          </div>
+        </section>
+
+        <section class="activity-card" id="discovery">
+          <div class="activity-heading">
+            <div class="section-icon icon-blue">02</div>
+            <div><p class="section-kicker">HOẠT ĐỘNG NHÓM · 20 PHÚT</p><h2>Khám phá cách website được tạo nên</h2><p>Quan sát các ví dụ thực tế, tìm hiểu người dùng và cách sắp xếp nội dung.</p></div>
+            <span class="time-chip">20 phút</span>
+          </div>
+
+          <div class="subactivity">
+            <div class="subactivity-title"><span class="subactivity-index">2.1</span><div><h3>Phân tích tình huống: Shopee</h3><p>Từ trải nghiệm của em, hãy phân tích nền tảng mua sắm trực tuyến này.</p></div><img class="activity-illustration" src="assets/shop-illustration.svg" alt="Minh họa mua sắm trực tuyến với giỏ hàng và hộp quà"></div>
+            <div class="question-list">
+              <label class="question-row"><span>01</span><strong>Website Shopee được tạo ra để làm gì?</strong><textarea data-answer="shopeePurpose" rows="2" placeholder="Mục đích chính của website..."></textarea></label>
+              <label class="question-row"><span>02</span><strong>Những ai thường sử dụng website này? (độ tuổi, nghề nghiệp, nhu cầu...)</strong><textarea data-answer="shopeeAudience" rows="2" placeholder="Đối tượng người dùng..."></textarea></label>
+              <label class="question-row"><span>03</span><strong>Người dùng truy cập Shopee để giải quyết những nhu cầu nào?</strong><textarea data-answer="shopeeNeeds" rows="2" placeholder="Nhu cầu khi truy cập..."></textarea></label>
+              <label class="question-row"><span>04</span><strong>Shopee đã đáp ứng tốt nhu cầu người dùng chưa? Vì sao?</strong><textarea data-answer="shopeeEvaluation" rows="2" placeholder="Nhận xét và giải thích..."></textarea></label>
+            </div>
+          </div>
+
+          <div class="subactivity">
+            <div class="subactivity-title"><span class="subactivity-index">2.2</span><div><h3>Tìm hiểu cấu trúc trang web</h3><p>Ghi lại các thành phần em quan sát được. Có thể dùng sơ đồ mũi tên trong phần mô tả.</p></div><img class="activity-illustration" src="assets/layout-illustration.svg" alt="Minh họa cấu trúc trang web với header, ba cột và footer"></div>
+            <div class="example-grid">
+              <div class="example-card">
+                <div class="example-top"><span class="example-badge">VÍ DỤ 01 · TIN TỨC</span><span class="layout-tag">3 cột · Desktop</span></div>
+                <h4>VNExpress</h4>
+                <label class="compact-field"><span>Header gồm những gì?</span><textarea data-answer="vnHeader" rows="2" placeholder="Logo, thanh điều hướng..."></textarea></label>
+                <label class="compact-field"><span>Cột trái · Sidebar</span><textarea data-answer="vnLeft" rows="2" placeholder="Nội dung cột bên trái..."></textarea></label>
+                <label class="compact-field"><span>Cột giữa · Nội dung chính</span><textarea data-answer="vnMain" rows="2" placeholder="Tin nổi bật, bài viết..."></textarea></label>
+                <label class="compact-field"><span>Cột phải · Sidebar</span><textarea data-answer="vnRight" rows="2" placeholder="Tin liên quan, quảng cáo..."></textarea></label>
+                <label class="compact-field"><span>Footer gồm những gì?</span><textarea data-answer="vnFooter" rows="2" placeholder="Thông tin cuối trang..."></textarea></label>
+                <label class="compact-field"><span>Sơ đồ bố cục trang</span><textarea data-answer="vnDiagram" rows="2" placeholder="Ví dụ: Header → 3 cột → Footer"></textarea></label>
+              </div>
+              <div class="example-card example-card-orange">
+                <div class="example-top"><span class="example-badge">VÍ DỤ 02 · BÁN HÀNG</span><span class="layout-tag">1 cột · Mobile</span></div>
+                <h4>Shopee</h4>
+                <label class="compact-field"><span>Header gồm những gì?</span><textarea data-answer="shopHeader" rows="2" placeholder="Logo, ô tìm kiếm, giỏ hàng..."></textarea></label>
+                <label class="compact-field"><span>Các khối nội dung chính</span><textarea data-answer="shopBody" rows="2" placeholder="Danh mục, sản phẩm, khuyến mãi..."></textarea></label>
+                <label class="compact-field"><span>Footer gồm những gì?</span><textarea data-answer="shopFooter" rows="2" placeholder="Hỗ trợ, thông tin, liên hệ..."></textarea></label>
+                <label class="compact-field"><span>Sơ đồ bố cục trang</span><textarea data-answer="shopDiagram" rows="2" placeholder="Ví dụ: Header → Khối nội dung → Footer"></textarea></label>
+              </div>
+            </div>
+          </div>
+
+          <div class="subactivity">
+            <div class="subactivity-title"><span class="subactivity-index">2.3</span><div><h3>Thiết kế mỹ thuật</h3><p>Chọn một ví dụ và đề xuất phong cách giao diện phù hợp.</p></div><img class="activity-illustration" src="assets/design-illustration.svg" alt="Minh họa bảng phối màu và thiết kế giao diện"></div>
+            <div class="design-table">
+              <div class="design-table-head"><span>Thành phần</span><span>Lựa chọn của em</span></div>
+              <label><strong>Trang web em chọn</strong><select data-answer="designWebsite"><option value="">Chọn một trang web</option><option>VNExpress</option><option>Shopee</option></select></label>
+              <label><strong>Phông chữ</strong><input data-answer="designFont" placeholder="Ví dụ: sans-serif, dễ đọc"></label>
+              <label><strong>Màu chủ đạo</strong><input data-answer="designColor" placeholder="Ví dụ: cam, trắng"></label>
+              <label><strong>Kiểu chữ</strong><input data-answer="designType" placeholder="Ví dụ: tiêu đề đậm, nội dung thường"></label>
+              <label><strong>Hình ảnh minh họa</strong><input data-answer="designImages" placeholder="Ví dụ: ảnh sản phẩm rõ nét"></label>
+            </div>
+          </div>
+        </section>
+
+        <section class="activity-card" id="practice">
+          <div class="activity-heading">
+            <div class="section-icon icon-green">03</div>
+            <div><p class="section-kicker">HOẠT ĐỘNG NHÓM · 10 PHÚT</p><h2>Luyện tập: Website trường mình</h2><p>Cùng phác thảo ý tưởng cho website mới của trường THPT Hà Thành.</p></div>
+            <span class="time-chip">10 phút</span>
+          </div>
+          <div class="practice-banner"><span class="banner-star">✳</span><div><strong>Thử thách thiết kế</strong><p>Một website dành cho học sinh, phụ huynh và thầy cô — em sẽ bắt đầu từ đâu?</p></div></div>
+          <div class="practice-grid">
+            <label class="compact-field"><span>Tên website</span><input data-answer="schoolName" placeholder="Tên gọi ngắn gọn, dễ nhớ"></label>
+            <label class="compact-field"><span>Slogan</span><input data-answer="schoolSlogan" placeholder="Thông điệp chính của website"></label>
+            <label class="compact-field full-field"><span>Nội dung chính</span><textarea data-answer="schoolContent" rows="3" placeholder="Website sẽ giúp người dùng làm được những gì?"></textarea></label>
+            <label class="compact-field"><span>Header gồm</span><textarea data-answer="schoolHeader" rows="2" placeholder="Logo, menu, tìm kiếm..."></textarea></label>
+            <label class="compact-field"><span>Body gồm</span><textarea data-answer="schoolBody" rows="2" placeholder="Tin tức, lịch học, hoạt động..."></textarea></label>
+            <label class="compact-field"><span>Footer gồm</span><textarea data-answer="schoolFooter" rows="2" placeholder="Địa chỉ, liên hệ, liên kết..."></textarea></label>
+          </div>
+          <div class="subactivity reflection-block" id="reflection">
+            <div class="subactivity-title"><span class="subactivity-index">✦</span><div><h3>Nhận xét ý tưởng của nhóm</h3><p>Nhìn lại thiết kế theo ba tiêu chí.</p></div></div>
+            <div class="practice-grid">
+              <label class="compact-field"><span>Bố cục</span><textarea data-answer="reviewLayout" rows="2" placeholder="Có dễ tìm nội dung không?"></textarea></label>
+              <label class="compact-field"><span>Màu sắc</span><textarea data-answer="reviewColor" rows="2" placeholder="Màu sắc có phù hợp không?"></textarea></label>
+              <label class="compact-field full-field"><span>Trải nghiệm người dùng</span><textarea data-answer="reviewExperience" rows="2" placeholder="Người dùng có dễ sử dụng website không?"></textarea></label>
+            </div>
+          </div>
+          <div class="lesson-footer">
+            <p><span class="save-indicator" id="save-indicator"></span><span id="save-label">Bài làm chỉ được gửi sau khi em nộp bài</span></p>
+            <button class="button button-primary" id="finish-lesson" type="button">Nộp bài <span aria-hidden="true">✓</span></button>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <footer class="site-footer"><span>THPT HÀ THÀNH</span><span>TIN HỌC 12 <i>·</i> BÀI 23</span><span>HỌC ĐỂ SÁNG TẠO</span></footer>
+    <script src="app.js?v=2"></script>
+  </body>
+</html>
