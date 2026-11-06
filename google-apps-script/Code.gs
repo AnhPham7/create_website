@@ -247,6 +247,6 @@ function createResponsePage_(response) {
     .replace(/\u2028/g, "\\u2028")
     .replace(/\u2029/g, "\\u2029");
   return HtmlService.createHtmlOutput(
-    `<!doctype html><html lang="vi"><head><meta charset="utf-8"></head><body><script>window.parent.postMessage(${serializedResponse}, "*");</script></body></html>`
+    `<!doctype html><html lang="vi"><head><meta charset="utf-8"></head><body><script>window.top.postMessage(${serializedResponse}, "*");</script></body></html>`
   ).setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }

@@ -31,7 +31,6 @@
     responseFrame.setAttribute("aria-hidden", "true");
     document.body.append(responseFrame);
     window.addEventListener("message", (event) => {
-      if (event.source !== responseFrame.contentWindow) return;
       const response = event.data;
       if (
         response?.source !== "ha-thanh-bai23" ||
@@ -72,7 +71,7 @@
         pending?.form?.remove();
         reject(
           new Error(
-            "Chưa nhận được phản hồi từ bảng tính. Vui lòng kiểm tra kết nối mạng và thử lại.",
+            "Website chưa nhận được xác nhận. Dữ liệu có thể đã được ghi vào Google Sheet; hãy kiểm tra bảng điểm danh trước khi điểm danh lại.",
           ),
         );
       }, 30000);

@@ -19,6 +19,8 @@ Mỗi lượt điểm danh được ghi trước khi học sinh bắt đầu. C�
 3. Triển khai, cấp quyền nếu được hỏi, rồi sao chép URL ứng dụng web kết thúc bằng `/exec`.
 4. Mở `app.js`, thay giá trị `SCRIPT_URL` ở đầu file bằng URL vừa sao chép. URL này cho phép gửi điểm danh/bài làm, nhưng không cấp quyền xem bảng tính.
 
+Khi cập nhật `google-apps-script/Code.gs`, hãy lưu mã, chọn **Triển khai → Quản lý các lần triển khai → Chỉnh sửa → Phiên bản mới → Triển khai** để URL hiện tại chạy mã mới. Nếu Sheet đã nhận lượt điểm danh nhưng website báo hết thời gian chờ, hãy kiểm tra Sheet trước khi thử lại để tránh tạo thêm lượt trùng.
+
 ## 3. Đưa website học sinh lên mạng
 
 Đưa các mục sau lên dịch vụ hosting trang tĩnh có HTTPS (ví dụ GitHub Pages hoặc Netlify):
