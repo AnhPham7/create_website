@@ -3,9 +3,12 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#f6f7fb">
+    <meta name="theme-color" content="#f7f8fc">
     <title>Bài 23 · Chuẩn bị xây dựng trang web</title>
-    <link rel="stylesheet" href="style.css?v=2">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap&subset=vietnamese" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=3">
   </head>
   <body>
     <header class="topbar">
@@ -84,7 +87,6 @@
           <a href="#warmup"><span>01</span> Khởi động</a>
           <a href="#discovery"><span>02</span> Khám phá</a>
           <a href="#practice"><span>03</span> Luyện tập</a>
-          <a href="#reflection"><span>04</span> Nhìn lại</a>
         </nav>
 
         <section class="activity-card" id="warmup">
@@ -122,6 +124,19 @@
               <div class="example-card">
                 <div class="example-top"><span class="example-badge">VÍ DỤ 01 · TIN TỨC</span><span class="layout-tag">3 cột · Desktop</span></div>
                 <h4>VNExpress</h4>
+                <figure class="example-photo">
+                  <img src="assets/express.png" alt="Ảnh minh họa giao diện trang tin VNExpress với thanh điều hướng và các cột nội dung">
+                  <figcaption>Ảnh giao diện tham khảo; bố cục thực tế có thể thay đổi.</figcaption>
+                </figure>
+                <figure class="layout-preview layout-preview-news" aria-label="Sơ đồ minh họa trang tin điện tử bố cục ba cột">
+                  <div class="preview-brandbar"><strong>VN</strong><span>Thời sự　Thế giới　Kinh doanh　Thể thao</span></div>
+                  <div class="preview-news-grid">
+                    <span class="preview-block">Cột trái<br><small>Chuyên mục</small></span>
+                    <span class="preview-block preview-block-main">Nội dung chính<br><small>Tin nổi bật · Bài viết</small></span>
+                    <span class="preview-block">Cột phải<br><small>Tin liên quan</small></span>
+                  </div>
+                  <figcaption>Sơ đồ minh họa: Header → 3 cột nội dung → Footer</figcaption>
+                </figure>
                 <label class="compact-field"><span>Header gồm những gì?</span><textarea data-answer="vnHeader" rows="2" placeholder="Logo, thanh điều hướng..."></textarea></label>
                 <label class="compact-field"><span>Cột trái · Sidebar</span><textarea data-answer="vnLeft" rows="2" placeholder="Nội dung cột bên trái..."></textarea></label>
                 <label class="compact-field"><span>Cột giữa · Nội dung chính</span><textarea data-answer="vnMain" rows="2" placeholder="Tin nổi bật, bài viết..."></textarea></label>
@@ -132,6 +147,22 @@
               <div class="example-card example-card-orange">
                 <div class="example-top"><span class="example-badge">VÍ DỤ 02 · BÁN HÀNG</span><span class="layout-tag">1 cột · Mobile</span></div>
                 <h4>Shopee</h4>
+                <figure class="example-photo">
+                  <img src="assets/shopee.png" alt="Ảnh minh họa giao diện mua sắm Shopee trên điện thoại">
+                  <figcaption>Ảnh giao diện tham khảo; bố cục thực tế có thể thay đổi.</figcaption>
+                </figure>
+                <figure class="layout-preview layout-preview-shop" aria-label="Sơ đồ minh họa giao diện mua sắm với header, tìm kiếm, giỏ hàng, sản phẩm và footer">
+                  <div class="shop-preview-top">Miễn phí vận chuyển　|　Hỗ trợ　|　Tải ứng dụng</div>
+                  <div class="shop-preview-header">
+                    <strong class="shop-preview-logo">shopee</strong>
+                    <span class="shop-preview-search">Tìm kiếm sản phẩm... <b aria-hidden="true">⌕</b></span>
+                    <span class="shop-preview-cart" aria-hidden="true">🛒</span>
+                  </div>
+                  <div class="shop-preview-categories">Thời trang　Điện tử　Nhà cửa　Sức khỏe</div>
+                  <div class="shop-preview-content"><span>Khuyến mãi</span><span>Sản phẩm</span><span>Gợi ý hôm nay</span></div>
+                  <div class="shop-preview-footer">Hỗ trợ　·　Liên hệ　·　Thông tin</div>
+                  <figcaption>Sơ đồ minh họa các phần thường gặp; giao diện thực tế có thể thay đổi.</figcaption>
+                </figure>
                 <label class="compact-field"><span>Header gồm những gì?</span><textarea data-answer="shopHeader" rows="2" placeholder="Logo, ô tìm kiếm, giỏ hàng..."></textarea></label>
                 <label class="compact-field"><span>Các khối nội dung chính</span><textarea data-answer="shopBody" rows="2" placeholder="Danh mục, sản phẩm, khuyến mãi..."></textarea></label>
                 <label class="compact-field"><span>Footer gồm những gì?</span><textarea data-answer="shopFooter" rows="2" placeholder="Hỗ trợ, thông tin, liên hệ..."></textarea></label>
@@ -163,6 +194,7 @@
           <div class="practice-grid">
             <label class="compact-field"><span>Tên website</span><input data-answer="schoolName" placeholder="Tên gọi ngắn gọn, dễ nhớ"></label>
             <label class="compact-field"><span>Slogan</span><input data-answer="schoolSlogan" placeholder="Thông điệp chính của website"></label>
+            <label class="compact-field"><span>Nội dung chính</span><textarea data-answer="schoolMainContent" rows="2" placeholder="Những nội dung quan trọng website cần giới thiệu..."></textarea></label>
             <label class="compact-field"><span>Header gồm</span><textarea data-answer="schoolHeader" rows="2" placeholder="Logo, menu, tìm kiếm..."></textarea></label>
             <label class="compact-field"><span>Body gồm</span><textarea data-answer="schoolBody" rows="2" placeholder="Tin tức, lịch học, hoạt động..."></textarea></label>
             <label class="compact-field"><span>Footer gồm</span><textarea data-answer="schoolFooter" rows="2" placeholder="Địa chỉ, liên hệ, liên kết..."></textarea></label>
@@ -175,9 +207,10 @@
             <p class="coding-instructions">Sửa mã mẫu bên dưới. Viết HTML cho nội dung, CSS trong thẻ <code>&lt;style&gt;</code> để trang trí, và JavaScript trong thẻ <code>&lt;script&gt;</code> để thêm tương tác. Máy tính tự cập nhật bản xem trước; điện thoại có nút Chạy thử riêng.</p>
             <div class="coding-workspace">
               <div class="code-panel">
-                <div class="code-toolbar"><span class="code-language"><span class="code-language-dot"></span> HTML · CSS · JS</span><span id="code-character-count">0 / 5.000 ký tự</span><button class="button button-run-code" id="run-code" type="button">▶ Chạy thử</button></div>
+                <div class="code-toolbar"><span class="code-language"><span class="code-language-dot"></span> HTML · CSS · JS</span><span id="code-character-count">0 / 5.000 ký tự</span><button class="button button-copy-code" id="copy-code" type="button">⧉ Sao chép</button><button class="button button-run-code" id="run-code" type="button">▶ Chạy thử</button></div>
                 <div class="code-editor-shell">
                   <pre class="code-line-numbers" id="code-line-numbers" aria-hidden="true"></pre>
+                  <pre class="code-highlight" id="code-highlight" aria-hidden="true"></pre>
                   <textarea id="website-code" data-answer="schoolContent" rows="20" maxlength="5000" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" aria-label="Mã HTML, CSS và JavaScript của website" wrap="soft"></textarea>
                 </div>
                 <div class="code-editor-hint"><kbd>Tab</kbd> để thụt lề <span>·</span> Sửa mã rồi nhấn <strong>Chạy thử</strong> để cập nhật kết quả</div>
@@ -189,14 +222,7 @@
             </div>
             <p class="code-editor-status" id="code-editor-status" aria-live="polite">Đang hiển thị trang mẫu. Hãy bắt đầu chỉnh sửa mã.</p>
           </section>
-          <div class="subactivity reflection-block" id="reflection">
-            <div class="subactivity-title"><span class="subactivity-index">✦</span><div><h3>Nhận xét ý tưởng của nhóm</h3><p>Nhìn lại thiết kế theo ba tiêu chí.</p></div></div>
-            <div class="practice-grid">
-              <label class="compact-field"><span>Bố cục</span><textarea data-answer="reviewLayout" rows="2" placeholder="Có dễ tìm nội dung không?"></textarea></label>
-              <label class="compact-field"><span>Màu sắc</span><textarea data-answer="reviewColor" rows="2" placeholder="Màu sắc có phù hợp không?"></textarea></label>
-              <label class="compact-field full-field"><span>Trải nghiệm người dùng</span><textarea data-answer="reviewExperience" rows="2" placeholder="Người dùng có dễ sử dụng website không?"></textarea></label>
-            </div>
-          </div>
+
           <div class="lesson-footer">
             <p><span class="save-indicator" id="save-indicator"></span><span id="save-label">Bài làm chỉ được gửi sau khi em nộp bài</span></p>
             <button class="button button-primary" id="finish-lesson" type="button">Nộp bài <span aria-hidden="true">✓</span></button>
@@ -206,6 +232,6 @@
     </main>
 
     <footer class="site-footer"><span>THPT HÀ THÀNH</span><span>TIN HỌC 12 <i>·</i> BÀI 23</span><span>HỌC ĐỂ SÁNG TẠO</span></footer>
-    <script src="app.js?v=2"></script>
+    <script src="app.js?v=3"></script>
   </body>
 </html>

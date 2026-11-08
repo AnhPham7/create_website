@@ -14,6 +14,8 @@ Mỗi lượt điểm danh được ghi trước khi học sinh bắt đầu. C�
 
 Ở Phần 3, học sinh sửa trực tiếp một tệp HTML có thể chứa HTML, CSS và JavaScript trong trình soạn thảo. Khung xem trước chạy trong iframe sandbox và tự cập nhật khi gõ; mã được gửi cùng câu trả lời `schoolContent` vào cột nội dung website hiện có.
 
+Sau khi điểm danh thành công, thông tin phiên và bản nháp câu trả lời được tự lưu trong `sessionStorage` của tab hiện tại. Nếu tải lại trang trong cùng tab, học sinh tiếp tục bài làm ở trạng thái trước đó; dữ liệu bài làm chỉ được gửi lên bảng tính khi nhấn nộp bài. Nút **Đổi học sinh** xóa bản nháp của tab. Bản nháp không đồng bộ giữa các tab hoặc thiết bị và không thay thế bản sao lưu trên máy chủ.
+
 ## 2. Cấu hình đầu nhận bài
 
 1. Trong Apps Script, chọn **Triển khai → Lần triển khai mới → Ứng dụng web**.
@@ -21,7 +23,7 @@ Mỗi lượt điểm danh được ghi trước khi học sinh bắt đầu. C�
 3. Triển khai, cấp quyền nếu được hỏi, rồi sao chép URL ứng dụng web kết thúc bằng `/exec`.
 4. Mở `app.js`, thay giá trị `SCRIPT_URL` ở đầu file bằng URL vừa sao chép. URL này cho phép gửi điểm danh/bài làm, nhưng không cấp quyền xem bảng tính.
 
-Khi cập nhật `google-apps-script/Code.gs`, hãy lưu mã, chọn **Triển khai → Quản lý các lần triển khai → Chỉnh sửa → Phiên bản mới → Triển khai** để URL hiện tại chạy mã mới. Nếu Sheet đã nhận lượt điểm danh nhưng website báo hết thời gian chờ, hãy kiểm tra Sheet trước khi thử lại để tránh tạo thêm lượt trùng.
+Khi cập nhật `google-apps-script/Code.gs`, hãy lưu mã, chọn **Triển khai → Quản lý các lần triển khai → Chỉnh sửa → Phiên bản mới → Triển khai** để URL hiện tại chạy mã mới. Khi có thêm trường trả lời, cột tương ứng sẽ được tự động bổ sung vào bảng tính hiện có mà không làm mất dữ liệu cũ. Nếu Sheet đã nhận lượt điểm danh nhưng website báo hết thời gian chờ, hãy kiểm tra Sheet trước khi thử lại để tránh tạo thêm lượt trùng.
 
 ## 3. Đưa website học sinh lên mạng
 

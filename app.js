@@ -11,15 +11,43 @@
   const attendanceCard = document.getElementById("attendance-card");
   const answerFields = [...document.querySelectorAll("[data-answer]")];
   const websiteCode = document.getElementById("website-code");
+  const codeHighlight = document.getElementById("code-highlight");
   const websitePreview = document.getElementById("website-preview");
   const lineNumbers = document.getElementById("code-line-numbers");
   const codeCharacterCount = document.getElementById("code-character-count");
   const codeEditorStatus = document.getElementById("code-editor-status");
   const runCodeButton = document.getElementById("run-code");
+  const copyCodeButton = document.getElementById("copy-code");
   const saveLabel = document.getElementById("save-label");
   const saveIndicator = document.getElementById("save-indicator");
   const finishButton = document.getElementById("finish-lesson");
+  const SESSION_STORAGE_KEY = "ha-thanh-bai23-progress-v1";
   const pendingRequests = new Map();
+  const revealTargets = [
+    ...document.querySelectorAll(
+      ".hero, .attendance-card, .activity-card, .subactivity, .question-card, .example-card",
+    ),
+  ];
+  let revealObserver = null;
+  if ("IntersectionObserver" in window) {
+    document.documentElement.classList.add("reveal-ready");
+    revealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("is-visible");
+          revealObserver.unobserve(entry.target);
+        });
+      },
+      { threshold: 0.12 },
+    );
+    revealTargets.forEach((target) => {
+      target.classList.add("reveal");
+      revealObserver.observe(target);
+    });
+  }
+  const codeTokenPattern =
+    /(&lt;!--[\s\S]*?--&gt;|&lt;!doctype\b[^&]*(?:&gt;|$)|&lt;\/?[a-z][\w-]*|&gt;|&quot;.*?&quot;|'[^'\n]*'|\b(?:const|let|var|function|return|if|else|new|document|true|false)\b|\b\d+(?:\.\d+)?\b)/gi;
   const STARTER_WEBSITE_CODE = `<!doctype html>
 <html lang="vi">
 <head>
@@ -66,6 +94,8 @@
 </body>
 </html>`;
   let activeSession = null;
+  let studentInfo = null;
+  let isSubmitted = false;
   let responseFrame = null;
   let previewTimer;
 
@@ -75,6 +105,101 @@
   const setStatus = (message, isError = true) => {
     status.textContent = message;
     status.classList.toggle("status-success", !isError);
+  };
+
+  const persistProgress = () => {
+    if (!studentInfo || (!activeSession && !isSubmitted)) return false;
+
+    const progress = {
+      version: 1,
+      student: studentInfo,
+      session: activeSession,
+      submitted: isSubmitted,
+      answers: Object.fromEntries(
+        answerFields.map((field) => [field.dataset.answer, field.value]),
+      ),
+    };
+
+    try {
+      sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(progress));
+      saveLabel.textContent = "Bản nháp được lưu trên thiết bị này · Bài làm chỉ gửi khi em nộp";
+      saveIndicator.style.background = "#51be8d";
+      return true;
+    } catch (error) {
+      console.error("Không thể lưu bản nháp trong phiên trình duyệt.", error);
+      saveLabel.textContent = "Không thể lưu bản nháp trên thiết bị này; đừng đóng trang";
+      saveIndicator.style.background = "#d65a5a";
+      return false;
+    }
+  };
+
+  const clearPersistedProgress = () => {
+    try {
+      sessionStorage.removeItem(SESSION_STORAGE_KEY);
+      return true;
+    } catch (error) {
+      console.error("Không thể xóa bản nháp khỏi phiên trình duyệt.", error);
+      return false;
+    }
+  };
+
+  const restoreProgress = () => {
+    let savedProgress;
+    try {
+      const savedValue = sessionStorage.getItem(SESSION_STORAGE_KEY);
+      if (!savedValue) return false;
+      savedProgress = JSON.parse(savedValue);
+    } catch (error) {
+      console.error("Không thể đọc bản nháp trong phiên trình duyệt.", error);
+      setStatus("Không thể khôi phục bản nháp trên thiết bị này. Câu trả lời chưa được xóa.");
+      return false;
+    }
+
+    const validStudent =
+      savedProgress?.version === 1 &&
+      typeof savedProgress.student?.name === "string" &&
+      typeof savedProgress.student?.className === "string";
+    const validSession =
+      savedProgress?.submitted === true ||
+      (typeof savedProgress.session?.id === "string" &&
+        typeof savedProgress.session?.token === "string");
+    const validAnswers =
+      savedProgress.answers &&
+      typeof savedProgress.answers === "object" &&
+      !Array.isArray(savedProgress.answers);
+
+    if (!validStudent || !validSession || !validAnswers) {
+      clearPersistedProgress();
+      setStatus("Bản nháp lưu trên thiết bị không hợp lệ. Em vui lòng điểm danh lại.");
+      return false;
+    }
+
+    studentInfo = savedProgress.student;
+    isSubmitted = savedProgress.submitted === true;
+    activeSession = isSubmitted ? null : savedProgress.session;
+    answerFields.forEach((field) => {
+      const answer = savedProgress.answers[field.dataset.answer];
+      if (typeof answer === "string") field.value = answer;
+    });
+
+    refreshCodeEditor();
+    runCode();
+    updateStudentView(studentInfo.name, studentInfo.className);
+
+    if (isSubmitted) {
+      answerFields.forEach((field) => {
+        field.disabled = true;
+      });
+      finishButton.disabled = true;
+      finishButton.innerHTML = 'Đã nộp bài <span aria-hidden="true">✓</span>';
+      saveLabel.textContent = "Bài làm đã được lưu trong bảng tính của giáo viên";
+      saveIndicator.style.background = "#51be8d";
+      setStatus("Bài làm của em đã được nộp thành công.", false);
+    } else {
+      saveLabel.textContent = "Đã khôi phục bản nháp · Bài làm tự lưu trên thiết bị này";
+      saveIndicator.style.background = "#51be8d";
+    }
+    return true;
   };
 
   const getResponseFrame = () => {
@@ -167,6 +292,21 @@
   const refreshCodeEditor = () => {
     const lineCount = Math.max(1, websiteCode.value.split("\n").length);
     lineNumbers.textContent = Array.from({ length: lineCount }, (_, index) => index + 1).join("\n");
+    const escapedCode = websiteCode.value
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+    codeHighlight.innerHTML = escapedCode.replace(codeTokenPattern, (token) => {
+      let tokenClass = "code-token-number";
+      if (token.startsWith("&lt;!--")) tokenClass = "code-token-comment";
+      else if (token.startsWith("&lt;") || token === "&gt;") tokenClass = "code-token-tag";
+      else if (token.startsWith("&quot;") || token.startsWith("'")) tokenClass = "code-token-string";
+      else if (/^(?:const|let|var|function|return|if|else|new|document|true|false)$/i.test(token)) {
+        tokenClass = "code-token-keyword";
+      }
+      return `<span class="${tokenClass}">${token}</span>`;
+    }) || " ";
     codeCharacterCount.textContent = `${websiteCode.value.length.toLocaleString("vi-VN")} / 5.000 ký tự`;
     clearTimeout(previewTimer);
     if (isTouchLayout()) {
@@ -182,6 +322,38 @@
   const runCode = () => {
     websitePreview.srcdoc = websiteCode.value;
     codeEditorStatus.textContent = "Đã chạy mã và cập nhật bản xem trước.";
+  };
+
+  const copyCode = async () => {
+    let copied = false;
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(websiteCode.value);
+        copied = true;
+      }
+    } catch {
+      // Fallback below supports browsers that block clipboard access on local files.
+    }
+
+    if (!copied) {
+      const selectionStart = websiteCode.selectionStart;
+      const selectionEnd = websiteCode.selectionEnd;
+      try {
+        websiteCode.focus();
+        websiteCode.select();
+        copied = document.execCommand("copy");
+        websiteCode.setSelectionRange(selectionStart, selectionEnd);
+      } catch {
+        copied = false;
+      }
+    }
+
+    copyCodeButton.textContent = copied ? "✓ Đã sao chép" : "Không sao chép được";
+    if (copied) {
+      window.setTimeout(() => {
+        copyCodeButton.textContent = "⧉ Sao chép";
+      }, 1800);
+    }
   };
 
   const resetCodeEditor = () => {
@@ -204,6 +376,13 @@
     refreshProgress();
     attendanceCard.hidden = true;
     lesson.hidden = false;
+    requestAnimationFrame(() => {
+      revealTargets.forEach((target) => {
+        if (!lesson.contains(target)) return;
+        revealObserver?.unobserve(target);
+        revealObserver?.observe(target);
+      });
+    });
     document.getElementById("change-student").hidden = false;
   };
 
@@ -225,6 +404,8 @@
   };
 
   resetCodeEditor();
+
+  restoreProgress();
 
   if (!isConfigured) {
     form.querySelector('button[type="submit"]').disabled = true;
@@ -257,9 +438,10 @@
         className,
       });
       activeSession = { id: response.sessionId, token: response.sessionToken };
+      studentInfo = { name, className };
+      isSubmitted = false;
+      persistProgress();
       setStatus(`Đã điểm danh cho ${name} · ${className}.`, false);
-      saveLabel.textContent = "Câu trả lời sẽ được gửi khi em nộp bài";
-      saveIndicator.style.background = "#e6a14e";
       updateStudentView(name, className);
     } catch (error) {
       setStatus(error.message);
@@ -276,6 +458,7 @@
       saveLabel.textContent = "Câu trả lời sẽ được gửi khi em nộp bài";
       saveIndicator.style.background = "#e6a14e";
       if (field === websiteCode) refreshCodeEditor();
+      persistProgress();
     });
     field.addEventListener("change", () => {
       field.removeAttribute("aria-invalid");
@@ -287,8 +470,11 @@
   websiteCode.addEventListener("scroll", () => {
     lineNumbers.scrollTop = websiteCode.scrollTop;
     lineNumbers.scrollLeft = websiteCode.scrollLeft;
+    codeHighlight.scrollTop = websiteCode.scrollTop;
+    codeHighlight.scrollLeft = websiteCode.scrollLeft;
   });
   runCodeButton.addEventListener("click", runCode);
+  copyCodeButton.addEventListener("click", copyCode);
   window.matchMedia("(max-width: 760px), (pointer: coarse)").addEventListener("change", () => {
     websiteCode.wrap = isTouchLayout() ? "soft" : "off";
   });
@@ -335,13 +521,18 @@
         sessionToken: activeSession.token,
         answers,
       });
+      isSubmitted = true;
+      activeSession = null;
+      const progressSaved = persistProgress();
+      if (!progressSaved) clearPersistedProgress();
       answerFields.forEach((field) => {
         field.disabled = true;
       });
       document.getElementById("progress-value").textContent = "100%";
       document.getElementById("progress-bar").style.width = "100%";
-      saveLabel.textContent =
-        "Bài làm đã được lưu trong bảng tính của giáo viên";
+      saveLabel.textContent = progressSaved
+        ? "Bài làm đã được lưu trong bảng tính của giáo viên"
+        : "Đã nộp bài; trình duyệt không lưu được trạng thái nộp";
       saveIndicator.style.background = "#51be8d";
       finishButton.innerHTML = 'Đã nộp bài <span aria-hidden="true">✓</span>';
       setStatus("Đã nộp bài thành công. Cảm ơn em!", false);
@@ -356,6 +547,9 @@
 
   document.getElementById("change-student").addEventListener("click", () => {
     activeSession = null;
+    studentInfo = null;
+    isSubmitted = false;
+    const cleared = clearPersistedProgress();
     lesson.hidden = true;
     attendanceCard.hidden = false;
     form.reset();
@@ -373,7 +567,12 @@
     saveLabel.textContent = "Bài làm chỉ được gửi sau khi em nộp bài";
     saveIndicator.style.background = "#51be8d";
     refreshProgress();
-    setStatus("");
+    setStatus(
+      cleared
+        ? ""
+        : "Không thể xóa bản nháp khỏi thiết bị. Vui lòng đóng tab sau khi đổi học sinh.",
+      !cleared,
+    );
     window.scrollTo({ top: 0, behavior: "smooth" });
   });
 })();

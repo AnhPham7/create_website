@@ -29,8 +29,10 @@ const ANSWER_FIELDS = [
   ["schoolFooter", "Website trường - Footer"],
   ["reviewLayout", "Nhận xét - Bố cục"],
   ["reviewColor", "Nhận xét - Màu sắc"],
-  ["reviewExperience", "Nhận xét - Trải nghiệm người dùng"]
+  ["reviewExperience", "Nhận xét - Trải nghiệm người dùng"],
+  ["schoolMainContent", "Website trường - Nội dung chính"]
 ];
+const OPTIONAL_ANSWER_FIELDS = new Set(["reviewLayout", "reviewColor", "reviewExperience"]);
 const BASE_HEADERS = [
   "Thời gian điểm danh",
   "Họ và tên",
@@ -132,7 +134,7 @@ function saveStudentAnswers_(payload) {
 
   const answers = ANSWER_FIELDS.map(([key]) => {
     const answer = typeof payload.answers[key] === "string" ? payload.answers[key].trim() : "";
-    if (!answer) {
+    if (!answer && !OPTIONAL_ANSWER_FIELDS.has(key)) {
       throw userError_("Bài làm còn nội dung chưa hoàn thành. Vui lòng điền tất cả câu trả lời rồi nộp lại.");
     }
     if (answer.length > 5000) {
@@ -206,7 +208,16 @@ function getOrCreateSheet_(spreadsheet) {
       .setWrap(true);
     sheet.setRowHeight(1, 42);
   } else {
-    const existing = sheet.getRange(1, 1, 1, headers.length).getDisplayValues()[0];
+    let existing = sheet.getRange(1, 1, 1, headers.length).getDisplayValues()[0];
+    const newAnswerHeader = "Website trường - Nội dung chính";
+    const previousHeaders = headers.filter((header) => header !== newAnswerHeader);
+    const previous = sheet.getRange(1, 1, 1, previousHeaders.length).getDisplayValues()[0];
+    if (previousHeaders.every((header, index) => previous[index] === header)) {
+      const newAnswerColumn = headers.indexOf(newAnswerHeader) + 1;
+      sheet.insertColumnBefore(newAnswerColumn);
+      sheet.getRange(1, newAnswerColumn).setValue(newAnswerHeader);
+      existing = sheet.getRange(1, 1, 1, headers.length).getDisplayValues()[0];
+    }
     if (headers.some((header, index) => existing[index] !== header)) {
       throw userError_(`Trang tính "${SHEET_NAME}" đã tồn tại nhưng tiêu đề không đúng. Hãy đổi tên hoặc xóa trang tính đó rồi khởi tạo lại.`);
     }
