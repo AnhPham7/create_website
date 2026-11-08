@@ -1,6 +1,6 @@
 (() => {
   const SCRIPT_URL =
-    "https://script.google.com/macros/s/AKfycbyuEUQU5isxDGFiqBJkYaVXHcdonAXNirX3ORxTEFnNAEEvb8N3xVmUoRqZFiIxguJawA/exec";
+    "https://script.google.com/macros/s/AKfycbwYrUgZc8rwwM1OBnF_1oSYsMZb6eGOsT3bQ5CJ9Ra_HjtVdXOPia_aRF4Z1R4ERpH0NA/exec";
   const isConfigured =
     /^https:\/\/script\.google\.com\/macros\/s\/[^/]+\/exec$/.test(SCRIPT_URL);
   const form = document.getElementById("attendance-form");
@@ -122,12 +122,14 @@
 
     try {
       sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(progress));
-      saveLabel.textContent = "Bản nháp được lưu trên thiết bị này · Bài làm chỉ gửi khi em nộp";
+      saveLabel.textContent =
+        "Bản nháp được lưu trên thiết bị này · Bài làm chỉ gửi khi em nộp";
       saveIndicator.style.background = "#51be8d";
       return true;
     } catch (error) {
       console.error("Không thể lưu bản nháp trong phiên trình duyệt.", error);
-      saveLabel.textContent = "Không thể lưu bản nháp trên thiết bị này; đừng đóng trang";
+      saveLabel.textContent =
+        "Không thể lưu bản nháp trên thiết bị này; đừng đóng trang";
       saveIndicator.style.background = "#d65a5a";
       return false;
     }
@@ -151,7 +153,9 @@
       savedProgress = JSON.parse(savedValue);
     } catch (error) {
       console.error("Không thể đọc bản nháp trong phiên trình duyệt.", error);
-      setStatus("Không thể khôi phục bản nháp trên thiết bị này. Câu trả lời chưa được xóa.");
+      setStatus(
+        "Không thể khôi phục bản nháp trên thiết bị này. Câu trả lời chưa được xóa.",
+      );
       return false;
     }
 
@@ -170,7 +174,9 @@
 
     if (!validStudent || !validSession || !validAnswers) {
       clearPersistedProgress();
-      setStatus("Bản nháp lưu trên thiết bị không hợp lệ. Em vui lòng điểm danh lại.");
+      setStatus(
+        "Bản nháp lưu trên thiết bị không hợp lệ. Em vui lòng điểm danh lại.",
+      );
       return false;
     }
 
@@ -192,11 +198,13 @@
       });
       finishButton.disabled = true;
       finishButton.innerHTML = 'Đã nộp bài <span aria-hidden="true">✓</span>';
-      saveLabel.textContent = "Bài làm đã được lưu trong bảng tính của giáo viên";
+      saveLabel.textContent =
+        "Bài làm đã được lưu trong bảng tính của giáo viên";
       saveIndicator.style.background = "#51be8d";
       setStatus("Bài làm của em đã được nộp thành công.", false);
     } else {
-      saveLabel.textContent = "Đã khôi phục bản nháp · Bài làm tự lưu trên thiết bị này";
+      saveLabel.textContent =
+        "Đã khôi phục bản nháp · Bài làm tự lưu trên thiết bị này";
       saveIndicator.style.background = "#51be8d";
     }
     return true;
@@ -291,26 +299,37 @@
 
   const refreshCodeEditor = () => {
     const lineCount = Math.max(1, websiteCode.value.split("\n").length);
-    lineNumbers.textContent = Array.from({ length: lineCount }, (_, index) => index + 1).join("\n");
+    lineNumbers.textContent = Array.from(
+      { length: lineCount },
+      (_, index) => index + 1,
+    ).join("\n");
     const escapedCode = websiteCode.value
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;");
-    codeHighlight.innerHTML = escapedCode.replace(codeTokenPattern, (token) => {
-      let tokenClass = "code-token-number";
-      if (token.startsWith("&lt;!--")) tokenClass = "code-token-comment";
-      else if (token.startsWith("&lt;") || token === "&gt;") tokenClass = "code-token-tag";
-      else if (token.startsWith("&quot;") || token.startsWith("'")) tokenClass = "code-token-string";
-      else if (/^(?:const|let|var|function|return|if|else|new|document|true|false)$/i.test(token)) {
-        tokenClass = "code-token-keyword";
-      }
-      return `<span class="${tokenClass}">${token}</span>`;
-    }) || " ";
+    codeHighlight.innerHTML =
+      escapedCode.replace(codeTokenPattern, (token) => {
+        let tokenClass = "code-token-number";
+        if (token.startsWith("&lt;!--")) tokenClass = "code-token-comment";
+        else if (token.startsWith("&lt;") || token === "&gt;")
+          tokenClass = "code-token-tag";
+        else if (token.startsWith("&quot;") || token.startsWith("'"))
+          tokenClass = "code-token-string";
+        else if (
+          /^(?:const|let|var|function|return|if|else|new|document|true|false)$/i.test(
+            token,
+          )
+        ) {
+          tokenClass = "code-token-keyword";
+        }
+        return `<span class="${tokenClass}">${token}</span>`;
+      }) || " ";
     codeCharacterCount.textContent = `${websiteCode.value.length.toLocaleString("vi-VN")} / 5.000 ký tự`;
     clearTimeout(previewTimer);
     if (isTouchLayout()) {
-      codeEditorStatus.textContent = "Mã đã thay đổi. Nhấn Chạy thử để xem kết quả.";
+      codeEditorStatus.textContent =
+        "Mã đã thay đổi. Nhấn Chạy thử để xem kết quả.";
       return;
     }
     previewTimer = setTimeout(() => {
@@ -348,7 +367,9 @@
       }
     }
 
-    copyCodeButton.textContent = copied ? "✓ Đã sao chép" : "Không sao chép được";
+    copyCodeButton.textContent = copied
+      ? "✓ Đã sao chép"
+      : "Không sao chép được";
     if (copied) {
       window.setTimeout(() => {
         copyCodeButton.textContent = "⧉ Sao chép";
@@ -475,13 +496,20 @@
   });
   runCodeButton.addEventListener("click", runCode);
   copyCodeButton.addEventListener("click", copyCode);
-  window.matchMedia("(max-width: 760px), (pointer: coarse)").addEventListener("change", () => {
-    websiteCode.wrap = isTouchLayout() ? "soft" : "off";
-  });
+  window
+    .matchMedia("(max-width: 760px), (pointer: coarse)")
+    .addEventListener("change", () => {
+      websiteCode.wrap = isTouchLayout() ? "soft" : "off";
+    });
   websiteCode.addEventListener("keydown", (event) => {
     if (event.key !== "Tab" || event.shiftKey) return;
     event.preventDefault();
-    websiteCode.setRangeText("  ", websiteCode.selectionStart, websiteCode.selectionEnd, "end");
+    websiteCode.setRangeText(
+      "  ",
+      websiteCode.selectionStart,
+      websiteCode.selectionEnd,
+      "end",
+    );
     websiteCode.dispatchEvent(new Event("input", { bubbles: true }));
   });
 
