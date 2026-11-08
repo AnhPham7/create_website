@@ -23,22 +23,23 @@ const ANSWER_FIELDS = [
   ["designImages", "Thiết kế - Hình ảnh"],
   ["schoolName", "Website trường - Tên"],
   ["schoolSlogan", "Website trường - Slogan"],
+  ["schoolMainContent", "Website trường - Nội dung chính"],
   ["schoolContent", "Website trường - Nội dung"],
   ["schoolHeader", "Website trường - Header"],
   ["schoolBody", "Website trường - Body"],
   ["schoolFooter", "Website trường - Footer"],
-  ["reviewLayout", "Nhận xét - Bố cục"],
-  ["reviewColor", "Nhận xét - Màu sắc"],
-  ["reviewExperience", "Nhận xét - Trải nghiệm người dùng"],
-  ["schoolMainContent", "Website trường - Nội dung chính"]
 ];
-const OPTIONAL_ANSWER_FIELDS = new Set(["reviewLayout", "reviewColor", "reviewExperience"]);
+const OPTIONAL_ANSWER_FIELDS = new Set([
+  "reviewLayout",
+  "reviewColor",
+  "reviewExperience",
+]);
 const BASE_HEADERS = [
   "Thời gian điểm danh",
   "Họ và tên",
   "Lớp",
   "Trạng thái bài",
-  "Thời gian nộp bài"
+  "Thời gian nộp bài",
 ];
 const SESSION_ID_HEADER = "Mã phiên (nội bộ)";
 const TOKEN_HASH_HEADER = "Mã xác thực (nội bộ)";
@@ -55,13 +56,20 @@ function setupAttendance() {
   if (!spreadsheet) {
     throw new Error("Hãy mở Apps Script từ bảng tính dùng để lưu điểm danh.");
   }
-  PropertiesService.getScriptProperties().setProperty("ATTENDANCE_SPREADSHEET_ID", spreadsheet.getId());
+  PropertiesService.getScriptProperties().setProperty(
+    "ATTENDANCE_SPREADSHEET_ID",
+    spreadsheet.getId(),
+  );
   const sheet = getOrCreateSheet_(spreadsheet);
-  SpreadsheetApp.getUi().alert(`Đã sẵn sàng lưu dữ liệu trong trang tính "${sheet.getName()}".`);
+  SpreadsheetApp.getUi().alert(
+    `Đã sẵn sàng lưu dữ liệu trong trang tính "${sheet.getName()}".`,
+  );
 }
 
 function doGet() {
-  return ContentService.createTextOutput("Đây là dịch vụ lưu bài học. Hãy mở đường dẫn website do giáo viên chia sẻ.");
+  return ContentService.createTextOutput(
+    "Đây là dịch vụ lưu bài học. Hãy mở đường dẫn website do giáo viên chia sẻ.",
+  );
 }
 
 function doPost(event) {
@@ -70,7 +78,9 @@ function doPost(event) {
   try {
     const rawPayload = event?.parameter?.payload;
     if (!rawPayload || rawPayload.length > 200000) {
-      throw userError_("Dữ liệu gửi lên không hợp lệ. Vui lòng tải lại trang và thử lại.");
+      throw userError_(
+        "Dữ liệu gửi lên không hợp lệ. Vui lòng tải lại trang và thử lại.",
+      );
     }
 
     const payload = JSON.parse(rawPayload);
@@ -79,16 +89,19 @@ function doPost(event) {
     } else if (payload.action === "submit") {
       response = saveStudentAnswers_(payload);
     } else {
-      throw userError_("Yêu cầu không hợp lệ. Vui lòng tải lại trang và thử lại.");
+      throw userError_(
+        "Yêu cầu không hợp lệ. Vui lòng tải lại trang và thử lại.",
+      );
     }
     response.ok = true;
   } catch (error) {
     console.error(error && error.stack ? error.stack : String(error));
     response = {
       ok: false,
-      message: error && error.isUserError
-        ? error.message
-        : "Không thể ghi dữ liệu vào bảng tính. Vui lòng thử lại hoặc báo giáo viên."
+      message:
+        error && error.isUserError
+          ? error.message
+          : "Không thể ghi dữ liệu vào bảng tính. Vui lòng thử lại hoặc báo giáo viên.",
     };
   }
   response.source = "ha-thanh-bai23";
@@ -98,7 +111,11 @@ function doPost(event) {
 
 function registerStudent_(payload) {
   const name = normalizeIdentity_(payload.name, 80, "họ và tên");
-  const className = normalizeIdentity_(payload.className, 20, "lớp").toLocaleUpperCase("vi");
+  const className = normalizeIdentity_(
+    payload.className,
+    20,
+    "lớp",
+  ).toLocaleUpperCase("vi");
   const lock = LockService.getScriptLock();
   lock.waitLock(30000);
   try {
@@ -113,9 +130,11 @@ function registerStudent_(payload) {
       "",
       ...ANSWER_FIELDS.map(() => ""),
       sessionId,
-      hashToken_(sessionToken)
+      hashToken_(sessionToken),
     ];
-    sheet.getRange(sheet.getLastRow() + 1, 1, 1, values.length).setValues([values]);
+    sheet
+      .getRange(sheet.getLastRow() + 1, 1, 1, values.length)
+      .setValues([values]);
     return { sessionId, sessionToken };
   } finally {
     lock.releaseLock();
@@ -125,17 +144,31 @@ function registerStudent_(payload) {
 function saveStudentAnswers_(payload) {
   const sessionId = String(payload.sessionId || "");
   const sessionToken = String(payload.sessionToken || "");
-  if (!/^[\da-f-]{36}$/i.test(sessionId) || !/^[\da-f-]{36}$/i.test(sessionToken)) {
+  if (
+    !/^[\da-f-]{36}$/i.test(sessionId) ||
+    !/^[\da-f-]{36}$/i.test(sessionToken)
+  ) {
     throw userError_("Phiên làm bài không hợp lệ. Vui lòng điểm danh lại.");
   }
-  if (!payload.answers || typeof payload.answers !== "object" || Array.isArray(payload.answers)) {
-    throw userError_("Không nhận được câu trả lời. Vui lòng kiểm tra bài làm và thử lại.");
+  if (
+    !payload.answers ||
+    typeof payload.answers !== "object" ||
+    Array.isArray(payload.answers)
+  ) {
+    throw userError_(
+      "Không nhận được câu trả lời. Vui lòng kiểm tra bài làm và thử lại.",
+    );
   }
 
   const answers = ANSWER_FIELDS.map(([key]) => {
-    const answer = typeof payload.answers[key] === "string" ? payload.answers[key].trim() : "";
+    const answer =
+      typeof payload.answers[key] === "string"
+        ? payload.answers[key].trim()
+        : "";
     if (!answer && !OPTIONAL_ANSWER_FIELDS.has(key)) {
-      throw userError_("Bài làm còn nội dung chưa hoàn thành. Vui lòng điền tất cả câu trả lời rồi nộp lại.");
+      throw userError_(
+        "Bài làm còn nội dung chưa hoàn thành. Vui lòng điền tất cả câu trả lời rồi nộp lại.",
+      );
     }
     if (answer.length > 5000) {
       throw userError_("Một câu trả lời vượt quá giới hạn 5.000 ký tự.");
@@ -150,14 +183,24 @@ function saveStudentAnswers_(payload) {
     const lastRow = sheet.getLastRow();
     const sessionColumn = BASE_HEADERS.length + ANSWER_FIELDS.length + 1;
     const tokenColumn = sessionColumn + 1;
-    if (lastRow < 2) throw userError_("Không tìm thấy lượt điểm danh. Vui lòng điểm danh lại.");
+    if (lastRow < 2)
+      throw userError_(
+        "Không tìm thấy lượt điểm danh. Vui lòng điểm danh lại.",
+      );
 
-    const match = sheet.getRange(2, sessionColumn, lastRow - 1, 1)
+    const match = sheet
+      .getRange(2, sessionColumn, lastRow - 1, 1)
       .createTextFinder(sessionId)
       .matchEntireCell(true)
       .findNext();
-    if (!match || sheet.getRange(match.getRow(), tokenColumn).getDisplayValue() !== hashToken_(sessionToken)) {
-      throw userError_("Không xác thực được lượt điểm danh. Vui lòng điểm danh lại.");
+    if (
+      !match ||
+      sheet.getRange(match.getRow(), tokenColumn).getDisplayValue() !==
+        hashToken_(sessionToken)
+    ) {
+      throw userError_(
+        "Không xác thực được lượt điểm danh. Vui lòng điểm danh lại.",
+      );
     }
 
     const row = match.getRow();
@@ -165,7 +208,9 @@ function saveStudentAnswers_(payload) {
       return { alreadySubmitted: true };
     }
 
-    const updatedRow = sheet.getRange(row, 1, 1, BASE_HEADERS.length + ANSWER_FIELDS.length + 2).getValues()[0];
+    const updatedRow = sheet
+      .getRange(row, 1, 1, BASE_HEADERS.length + ANSWER_FIELDS.length + 2)
+      .getValues()[0];
     updatedRow[3] = "Đã nộp";
     updatedRow[4] = new Date();
     answers.forEach((answer, index) => {
@@ -179,39 +224,55 @@ function saveStudentAnswers_(payload) {
 }
 
 function getAttendanceSheet_() {
-  const spreadsheetId = PropertiesService.getScriptProperties().getProperty("ATTENDANCE_SPREADSHEET_ID");
+  const spreadsheetId = PropertiesService.getScriptProperties().getProperty(
+    "ATTENDANCE_SPREADSHEET_ID",
+  );
   if (!spreadsheetId) {
-    throw userError_("Bảng điểm danh chưa được thiết lập. Giáo viên cần khởi tạo bảng tính trước khi chia sẻ website.");
+    throw userError_(
+      "Bảng điểm danh chưa được thiết lập. Giáo viên cần khởi tạo bảng tính trước khi chia sẻ website.",
+    );
   }
   return getOrCreateSheet_(SpreadsheetApp.openById(spreadsheetId));
 }
 
 function getOrCreateSheet_(spreadsheet) {
-  const sheet = spreadsheet.getSheetByName(SHEET_NAME) || spreadsheet.insertSheet(SHEET_NAME);
+  const sheet =
+    spreadsheet.getSheetByName(SHEET_NAME) ||
+    spreadsheet.insertSheet(SHEET_NAME);
   const headers = [
     ...BASE_HEADERS,
     ...ANSWER_FIELDS.map(([, label]) => label),
     SESSION_ID_HEADER,
-    TOKEN_HASH_HEADER
+    TOKEN_HASH_HEADER,
   ];
   if (sheet.getMaxColumns() < headers.length) {
-    sheet.insertColumnsAfter(sheet.getMaxColumns(), headers.length - sheet.getMaxColumns());
+    sheet.insertColumnsAfter(
+      sheet.getMaxColumns(),
+      headers.length - sheet.getMaxColumns(),
+    );
   }
 
   if (sheet.getLastRow() === 0) {
     sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
     sheet.setFrozenRows(1);
-    sheet.getRange(1, 1, 1, headers.length)
+    sheet
+      .getRange(1, 1, 1, headers.length)
       .setBackground("#6754e8")
       .setFontColor("#ffffff")
       .setFontWeight("bold")
       .setWrap(true);
     sheet.setRowHeight(1, 42);
   } else {
-    let existing = sheet.getRange(1, 1, 1, headers.length).getDisplayValues()[0];
+    let existing = sheet
+      .getRange(1, 1, 1, headers.length)
+      .getDisplayValues()[0];
     const newAnswerHeader = "Website trường - Nội dung chính";
-    const previousHeaders = headers.filter((header) => header !== newAnswerHeader);
-    const previous = sheet.getRange(1, 1, 1, previousHeaders.length).getDisplayValues()[0];
+    const previousHeaders = headers.filter(
+      (header) => header !== newAnswerHeader,
+    );
+    const previous = sheet
+      .getRange(1, 1, 1, previousHeaders.length)
+      .getDisplayValues()[0];
     if (previousHeaders.every((header, index) => previous[index] === header)) {
       const newAnswerColumn = headers.indexOf(newAnswerHeader) + 1;
       sheet.insertColumnBefore(newAnswerColumn);
@@ -219,7 +280,9 @@ function getOrCreateSheet_(spreadsheet) {
       existing = sheet.getRange(1, 1, 1, headers.length).getDisplayValues()[0];
     }
     if (headers.some((header, index) => existing[index] !== header)) {
-      throw userError_(`Trang tính "${SHEET_NAME}" đã tồn tại nhưng tiêu đề không đúng. Hãy đổi tên hoặc xóa trang tính đó rồi khởi tạo lại.`);
+      throw userError_(
+        `Trang tính "${SHEET_NAME}" đã tồn tại nhưng tiêu đề không đúng. Hãy đổi tên hoặc xóa trang tính đó rồi khởi tạo lại.`,
+      );
     }
   }
   sheet.hideColumns(headers.length - 1, 2);
@@ -227,9 +290,12 @@ function getOrCreateSheet_(spreadsheet) {
 }
 
 function normalizeIdentity_(value, limit, fieldName) {
-  const normalized = typeof value === "string" ? value.trim().replace(/\s+/g, " ") : "";
+  const normalized =
+    typeof value === "string" ? value.trim().replace(/\s+/g, " ") : "";
   if (!normalized || normalized.length > limit) {
-    throw userError_(`Vui lòng nhập ${fieldName} hợp lệ (tối đa ${limit} ký tự).`);
+    throw userError_(
+      `Vui lòng nhập ${fieldName} hợp lệ (tối đa ${limit} ký tự).`,
+    );
   }
   return normalized;
 }
@@ -242,8 +308,10 @@ function hashToken_(token) {
   return Utilities.computeDigest(
     Utilities.DigestAlgorithm.SHA_256,
     token,
-    Utilities.Charset.UTF_8
-  ).map((byte) => (`0${(byte & 0xff).toString(16)}`).slice(-2)).join("");
+    Utilities.Charset.UTF_8,
+  )
+    .map((byte) => `0${(byte & 0xff).toString(16)}`.slice(-2))
+    .join("");
 }
 
 function userError_(message) {
@@ -258,6 +326,6 @@ function createResponsePage_(response) {
     .replace(/\u2028/g, "\\u2028")
     .replace(/\u2029/g, "\\u2029");
   return HtmlService.createHtmlOutput(
-    `<!doctype html><html lang="vi"><head><meta charset="utf-8"></head><body><script>window.top.postMessage(${serializedResponse}, "*");</script></body></html>`
+    `<!doctype html><html lang="vi"><head><meta charset="utf-8"></head><body><script>window.top.postMessage(${serializedResponse}, "*");</script></body></html>`,
   ).setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
